@@ -12,6 +12,13 @@ namespace ServerAssignment
         TcpListener server = null;
         public EchoServer()
         {
+            // List of the categories. Now they are loaded in memory, might be better with a static class.
+            List<Category> categories = new List<Category>();
+            categories.Add(new Category(1, "Beverages"));
+            categories.Add(new Category(2, "Condiments"));
+            categories.Add(new Category(3, "Confections"));
+
+            // Server setup
             int port = 5000;
             IPAddress localAddr = IPAddress.Parse("127.0.0.1");
 
@@ -41,10 +48,11 @@ namespace ServerAssignment
             var strm = client.GetStream();
 
             byte[] buffer = new byte[client.ReceiveBufferSize];
-            var bytesRead = strm.Read(buffer, 0, buffer.Length);
+            int bytesRead = strm.Read(buffer, 0, buffer.Length);
 
             var request = Encoding.UTF8.GetString(buffer);
 
+            
             Console.WriteLine(request.Trim('\0'));
 
             var response = Encoding.UTF8.GetBytes(request.ToUpper());

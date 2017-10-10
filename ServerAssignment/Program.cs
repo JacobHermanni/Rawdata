@@ -6,9 +6,7 @@ namespace ServerAssignment
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting server");
-
-            var echo = new EchoServer();
+            new EchoServer();
         }
     }
 }
