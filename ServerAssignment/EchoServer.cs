@@ -12,15 +12,14 @@ namespace ServerAssignment
         TcpListener server = null;
         public EchoServer()
         {
-            // Set the TcpListener on port 13000.
-            Int32 port = 5000;
+            int port = 5000;
             IPAddress localAddr = IPAddress.Parse("127.0.0.1");
 
-            // TcpListener server = new TcpListener(port);
-            server = new TcpListener(localAddr, port);
+            var server = new TcpListener(localAddr, port);
 
-            // Start listening for client requests.
             server.Start();
+
+            Console.WriteLine("Started");
 
             while (true)
             {
@@ -29,8 +28,8 @@ namespace ServerAssignment
                 Console.WriteLine("Client connected");
 
                 var thread = new Thread(HandleClient);
-                thread.Start(client);
 
+                thread.Start(client);
             }
         }
 
@@ -39,20 +38,22 @@ namespace ServerAssignment
             var client = clientObj as TcpClient;
             if (client == null) return;
 
-            var stream = client.GetStream();
+            var strm = client.GetStream();
 
             byte[] buffer = new byte[client.ReceiveBufferSize];
-            var bytesRead = stream.Read(buffer, 0, buffer.Length);
+            var bytesRead = strm.Read(buffer, 0, buffer.Length);
 
-            string request = Encoding.UTF8.GetString(buffer);
+            var request = Encoding.UTF8.GetString(buffer);
 
-            Console.WriteLine(request);
+            Console.WriteLine(request.Trim('\0'));
 
-            var response = Encoding.UTF8.GetBytes(request);
+            var response = Encoding.UTF8.GetBytes(request.ToUpper());
 
-            stream.Write(buffer, 0, bytesRead);
+            strm.Write(response, 0, bytesRead);
 
+            strm.Close();
 
+            client.Dispose();
         }
     }
 }
